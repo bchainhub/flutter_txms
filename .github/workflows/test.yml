@@ -31,13 +31,7 @@ jobs:
       run: flutter analyze
 
     - name: Run Tests
-      run: flutter test --coverage
-
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v4
-      with:
-        file: coverage/lcov.info
-        token: ${{ secrets.CODECOV_TOKEN }}
+      run: flutter test
 
     - name: Check Publish Warnings
       run: flutter pub publish --dry-run

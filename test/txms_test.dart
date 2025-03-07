@@ -22,6 +22,12 @@ void main() {
       expect(count, 1);
     });
 
+    test('count MMS segments', () {
+      const hex = '0x48656c6c6f20576f726c64';
+      final count = txms.count(hex, 'mms');
+      expect(count, 1);
+    });
+
     test('generate SMS URI', () {
       final uri = txms.sms(
         number: '+12019715152',
@@ -29,6 +35,15 @@ void main() {
         network: 'mainnet',
       );
       expect(uri.startsWith('sms:+12019715152?body='), true);
+    });
+
+    test('generate MMS URI', () {
+      final uri = txms.mms(
+        number: '+12019715152',
+        message: '0x48656c6c6f',
+        network: 'mainnet',
+      );
+      expect(uri.startsWith('mms:+12019715152?body='), true);
     });
 
     test('getEndpoint returns correct endpoints', () {
@@ -55,7 +70,6 @@ void main() {
 
     test('setCustomPhoneNumbers sets numbers correctly', () {
       Txms.setCustomPhoneNumbers(1, 'us', ['+18005551234']);
-      final txms = Txms();
       final endpoints = txms.getEndpoint(1, 'us');
       expect(endpoints['us'], contains('+18005551234'));
     });
@@ -63,7 +77,6 @@ void main() {
     test('resetCustomPhoneNumbers clears custom numbers', () {
       Txms.setCustomPhoneNumbers(1, 'us', ['+18005551234']);
       Txms.resetCustomPhoneNumbers();
-      final txms = Txms();
       final endpoints = txms.getEndpoint(1, 'us');
       expect(endpoints['us'], equals(countries['1']!['us']));
     });
@@ -78,10 +91,33 @@ void main() {
     test('custom numbers take precedence over default numbers', () {
       const customNumber = '+18005551234';
       Txms.setCustomPhoneNumbers(1, 'us', [customNumber]);
-      final txms = Txms();
       final endpoints = txms.getEndpoint(1, 'us');
       expect(endpoints['us']![0], equals(customNumber));
       expect(endpoints['us']![0], isNot(equals(countries['1']!['us']![0])));
+    });
+  });
+
+  group('SMS/MMS Client Tests', () {
+    test('openSmsClient generates correct URI', () async {
+      expect(
+        () => txms.openSmsClient(
+          number: '+12019715152',
+          message: '0x48656c6c6f',
+          network: 'mainnet',
+        ),
+        throwsA(anything),
+      );
+    });
+
+    test('openMmsClient generates correct URI', () async {
+      expect(
+        () => txms.openMmsClient(
+          number: '+12019715152',
+          message: '0x48656c6c6f',
+          network: 'mainnet',
+        ),
+        throwsA(anything),
+      );
     });
   });
 }

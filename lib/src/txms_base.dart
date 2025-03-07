@@ -13,7 +13,11 @@ class Txms implements Transport {
     aliases[name] = id;
   }
 
-  static void addCountry(dynamic networkId, String countryCode, List<String> phoneNumbers) {
+  static void addCountry(
+    dynamic networkId,
+    String countryCode,
+    List<String> phoneNumbers,
+  ) {
     final networkKey = networkId.toString();
     countries[networkKey] ??= {};
     countries[networkKey]![countryCode] = phoneNumbers;
@@ -264,11 +268,10 @@ class Txms implements Transport {
         ? hex.map((h) => encode(h)).join('\n')
         : encode(hex as String);
 
-    final cleanedHex = (hex is List ? hex[0] : hex as String)
-            .toLowerCase()
-            .startsWith('0x')
-        ? (hex is List ? hex[0] : hex as String).substring(2)
-        : (hex is List ? hex[0] : hex as String);
+    final cleanedHex =
+        (hex is List ? hex[0] : hex as String).toLowerCase().startsWith('0x')
+            ? (hex is List ? hex[0] : hex as String).substring(2)
+            : (hex is List ? hex[0] : hex as String);
 
     var filename = cleanedHex.length < 12
         ? cleanedHex

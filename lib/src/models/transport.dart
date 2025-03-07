@@ -33,4 +33,18 @@ abstract class Transport {
     String? optionalFilename,
     String? optionalPath,
   });
+  Future<bool> openSmsClient({
+    dynamic number,
+    String? message,
+    dynamic network,
+    bool encodeMessage = true,
+    String platform = 'global',
+  });
+  Future<bool> openMmsClient({
+    dynamic number,
+    String? message,
+    dynamic network,
+    bool encodeMessage = true,
+    String platform = 'global',
+  });
 }

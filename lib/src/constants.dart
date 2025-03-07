@@ -1,5 +1,5 @@
 /// Network aliases mapping friendly names to network IDs
-const Map<String, int> aliases = {
+Map<String, int> aliases = {
   'mainnet': 1,
   'devin': 3,
 };

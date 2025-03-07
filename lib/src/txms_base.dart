@@ -4,11 +4,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'models/transport.dart';
 import 'constants.dart';
+import 'dart:collection';
 
 class Txms implements Transport {
   static final Map<String, Map<String, List<String>>> _customPhoneNumbers = {};
 
   static void addAlias(String name, int id) {
+    if (aliases is UnmodifiableMapView<String, int>) {
+      aliases = Map<String, int>.from(aliases);
+    }
     aliases[name] = id;
   }
 

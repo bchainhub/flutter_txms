@@ -4,8 +4,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'models/transport.dart';
 import 'constants.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class Txms implements Transport {
   static final Map<String, Map<String, List<String>>> _customPhoneNumbers = {};
@@ -155,7 +153,7 @@ class Txms implements Transport {
 
       for (final country in {
         ...defaultCountries.keys,
-        ..._customPhoneNumbers[networkKey]?.keys ?? {},
+        ...?_customPhoneNumbers[networkKey]?.keys,
       }) {
         result[country] = _getPhoneNumbers(networkKey, country);
       }

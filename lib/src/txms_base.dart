@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'models/transport.dart';
 import 'constants.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Txms implements Transport {
   static final Map<String, Map<String, List<String>>> _customPhoneNumbers = {};
@@ -150,7 +150,7 @@ class Txms implements Transport {
 
       for (final country in {
         ...defaultCountries.keys,
-        ..._customPhoneNumbers[networkKey]?.keys ?? {}
+        ..._customPhoneNumbers[networkKey]?.keys ?? {},
       }) {
         result[country] = _getPhoneNumbers(networkKey, country);
       }
@@ -272,7 +272,8 @@ class Txms implements Transport {
 
     var filename = cleanedHex.length < 12
         ? cleanedHex
-        : '${cleanedHex.substring(0, 6)}${cleanedHex.substring(cleanedHex.length - 6)}';
+        : '${cleanedHex.substring(0, 6)}'
+            '${cleanedHex.substring(cleanedHex.length - 6)}';
 
     if (hex is List && hex.length > 1 && optionalFilename == null) {
       filename = '$filename.batch';

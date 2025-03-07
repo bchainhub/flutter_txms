@@ -2,7 +2,10 @@ abstract class Transport {
   String encode(String hex);
   String decode(String data);
   int count(String hex, [String? type]);
-  Map<String, List<String>> getEndpoint([dynamic network, dynamic countriesList]);
+  Map<String, List<String>> getEndpoint([
+    dynamic network,
+    dynamic countriesList,
+  ]);
   String sms({
     dynamic number,
     String? message,

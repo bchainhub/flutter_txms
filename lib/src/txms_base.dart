@@ -7,6 +7,8 @@ import 'constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Txms implements Transport {
+  static final Map<String, Map<String, List<String>>> _customPhoneNumbers = {};
+
   static void addAlias(String name, int id) {
     aliases[name] = id;
   }
@@ -15,6 +17,35 @@ class Txms implements Transport {
     final networkKey = networkId.toString();
     countries[networkKey] ??= {};
     countries[networkKey]![countryCode] = phoneNumbers;
+  }
+
+  static void setCustomPhoneNumbers(
+    dynamic networkId,
+    String countryCode,
+    List<String> phoneNumbers,
+  ) {
+    for (final number in phoneNumbers) {
+      if (!RegExp(r'^\+\d+$').hasMatch(number)) {
+        throw FormatException('Invalid phone number format', number);
+      }
+    }
+
+    final networkKey = networkId.toString();
+    _customPhoneNumbers[networkKey] ??= {};
+    _customPhoneNumbers[networkKey]![countryCode] = phoneNumbers;
+  }
+
+  static void resetCustomPhoneNumbers() {
+    _customPhoneNumbers.clear();
+  }
+
+  List<String> _getPhoneNumbers(String networkKey, String countryCode) {
+    if (_customPhoneNumbers.containsKey(networkKey) &&
+        _customPhoneNumbers[networkKey]!.containsKey(countryCode)) {
+      return _customPhoneNumbers[networkKey]![countryCode]!;
+    }
+
+    return countries[networkKey]?[countryCode] ?? [];
   }
 
   String _slugify(String str) {
@@ -94,7 +125,10 @@ class Txms implements Transport {
   }
 
   @override
-  Map<String, List<String>> getEndpoint([dynamic network, dynamic countriesList]) {
+  Map<String, List<String>> getEndpoint([
+    dynamic network,
+    dynamic countriesList,
+  ]) {
     List<String>? requestedList;
     if (countriesList is List) {
       requestedList = List<String>.from(countriesList);
@@ -108,12 +142,26 @@ class Txms implements Transport {
             ? aliases[network.toLowerCase()] ?? int.parse(network)
             : network as int;
 
-    if (requestedList == null) return countries[netw.toString()]!;
+    final networkKey = netw.toString();
+
+    if (requestedList == null) {
+      final result = <String, List<String>>{};
+      final defaultCountries = countries[networkKey] ?? {};
+
+      for (final country in {
+        ...defaultCountries.keys,
+        ..._customPhoneNumbers[networkKey]?.keys ?? {}
+      }) {
+        result[country] = _getPhoneNumbers(networkKey, country);
+      }
+      return result;
+    }
 
     final endpoints = <String, List<String>>{};
     for (final countryCode in requestedList) {
-      if (countries[netw.toString()]?[countryCode] != null) {
-        endpoints[countryCode] = countries[netw.toString()]![countryCode]!;
+      final numbers = _getPhoneNumbers(networkKey, countryCode);
+      if (numbers.isNotEmpty) {
+        endpoints[countryCode] = numbers;
       }
     }
     return endpoints;

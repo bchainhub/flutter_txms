@@ -46,4 +46,42 @@ void main() {
       expect(countries['1']!['uk'], contains('+441234567890'));
     });
   });
+
+  group('Custom Phone Numbers Tests', () {
+    setUp(() {
+      // Reset custom numbers before each test
+      Txms.resetCustomPhoneNumbers();
+    });
+
+    test('setCustomPhoneNumbers sets numbers correctly', () {
+      Txms.setCustomPhoneNumbers(1, 'us', ['+18005551234']);
+      final txms = Txms();
+      final endpoints = txms.getEndpoint(1, 'us');
+      expect(endpoints['us'], contains('+18005551234'));
+    });
+
+    test('resetCustomPhoneNumbers clears custom numbers', () {
+      Txms.setCustomPhoneNumbers(1, 'us', ['+18005551234']);
+      Txms.resetCustomPhoneNumbers();
+      final txms = Txms();
+      final endpoints = txms.getEndpoint(1, 'us');
+      expect(endpoints['us'], equals(countries['1']!['us']));
+    });
+
+    test('invalid phone number format throws FormatException', () {
+      expect(
+        () => Txms.setCustomPhoneNumbers(1, 'us', ['invalid']),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('custom numbers take precedence over default numbers', () {
+      const customNumber = '+18005551234';
+      Txms.setCustomPhoneNumbers(1, 'us', [customNumber]);
+      final txms = Txms();
+      final endpoints = txms.getEndpoint(1, 'us');
+      expect(endpoints['us']![0], equals(customNumber));
+      expect(endpoints['us']![0], isNot(equals(countries['1']!['us']![0])));
+    });
+  });
 }

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://pub.dev/packages/flutter_txms
+    about: Read the Flutter TXMS package documentation on pub.dev
+  - name: Example App
+    url: https://github.com/bchainhub/flutter_txms/tree/main/example
+    about: Check out the example Flutter application
+  - name: Discussions
+    url: https://github.com/bchainhub/flutter_txms/discussions
+    about: Ask questions and discuss with other Flutter TXMS users

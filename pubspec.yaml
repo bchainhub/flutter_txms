@@ -5,7 +5,6 @@ repository: https://github.com/bchainhub/flutter_txms
 homepage: https://github.com/bchainhub/flutter_txms
 documentation: https://github.com/bchainhub/flutter_txms#readme
 issue_tracker: https://github.com/bchainhub/flutter_txms/issues
-publish_to: https://pub.dev
 
 environment:
   sdk: '>=3.5.0 <4.0.0'

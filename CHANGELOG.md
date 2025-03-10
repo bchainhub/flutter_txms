@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Fixed num
+- Added missing comments
+
 ## 0.1.1
 
 - Updated dependencies

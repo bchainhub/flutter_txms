@@ -237,13 +237,14 @@ class Txms implements Transport {
         throw FormatException('Invalid number format', number);
       }
     } else if (number is List) {
-      final validNumbers = number.map((num) {
-        if (num is int) {
-          return '+$num';
-        } else if (num is String && RegExp(r'^\+\d+$').hasMatch(num)) {
-          return num;
+      final validNumbers = number.map((numberItem) {
+        if (numberItem is int) {
+          return '+$numberItem';
+        } else if (numberItem is String &&
+            RegExp(r'^\+\d+$').hasMatch(numberItem)) {
+          return numberItem;
         } else {
-          throw FormatException('Invalid number format', num);
+          throw FormatException('Invalid number format', numberItem);
         }
       }).toList();
       endpoint = validNumbers.join(',');

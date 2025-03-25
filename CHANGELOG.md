@@ -1,8 +1,13 @@
 # Changelog
 
+## 0.1.3
+
+- Updated pubspec.yaml
+- Upgraded dependencies
+
 ## 0.1.2
 
-- Fixed num
+- Fixed number of segments calculation
 - Added missing comments
 
 ## 0.1.1

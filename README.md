@@ -13,7 +13,8 @@ A Flutter package for encoding and decoding hex messages for SMS/MMS communicati
 - 💾 File download support
 - 📲 Direct SMS/MMS client opening
 - 🌐 Cross-platform support (iOS, Android, Web, Desktop)
-- ✨ Zero external runtime dependencies
+- 🔀 Country, calling-code, and organization-aware number selection
+- 🧩 Extensible blockchain number pools and aliases
 - 🔒 Null safety
 - 📚 Comprehensive documentation
 
@@ -23,7 +24,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_txms: ^0.1.0
+  flutter_txms: ^0.2.0
 ```
 
 ## Usage
@@ -101,6 +102,26 @@ final mmsCount = txms.count('0x48656c6c6f20576f726c64', 'mms');
 print('Number of MMS segments: $mmsCount');
 ```
 
+### Number Selection and Custom Pools
+
+```dart
+final txms = Txms();
+
+// Select directly or fall back through shared calling codes, organizations,
+// and finally the network's global endpoint.
+final number = txms.getNumber(iso3166A2: 'ca', network: 'xcb');
+
+// Add a blockchain pool and an alias without changing the library.
+Txms.addCountry('teth', 'global', ['+441234567890']);
+Txms.addCountry('teth', 'gb', ['+441234567890']);
+Txms.addAlias('testnet', 'teth');
+
+final customNumber = txms.getNumber(
+  iso3166A2: 'gb',
+  network: 'testnet',
+);
+```
+
 ## Platform Support
 
 | Android | iOS | Web | macOS | Windows | Linux |
@@ -110,6 +131,7 @@ print('Number of MMS segments: $mmsCount');
 ## Additional Features
 
 - Custom network aliases
+- Named `xcb` and `xab` number pools
 - Country-specific endpoints
 - Batch message processing
 - Platform-specific URI generation

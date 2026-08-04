@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0
+
+- Added `getNumber` with direct, calling-code, organization, and global fallback selection.
+- Added `xcb` and `xab` pool names and aliases matching txms.js 1.3.4.
+- Made aliases and country pools extensible by string-based blockchain names.
+- Normalized alias and country-code lookups to lowercase, including `UK` to `gb`.
+- Added recursive output-directory creation for downloaded messages.
+- Made empty and prefix-only hex input report a `FormatException`.
+- Updated Flutter dependencies and removed the unused `http` dependency.
+- Expanded parity and edge-case tests.
+
 ## 0.1.3
 
 - Updated pubspec.yaml

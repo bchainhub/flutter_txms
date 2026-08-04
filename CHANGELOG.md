@@ -8,7 +8,8 @@
 - Normalized alias and country-code lookups to lowercase, including `UK` to `gb`.
 - Added recursive output-directory creation for downloaded messages.
 - Made empty and prefix-only hex input report a `FormatException`.
-- Updated Flutter dependencies and removed the unused `http` dependency.
+- Updated compatible runtime dependencies, retained Flutter 3.29/Dart
+  3.7-compatible constraints, and removed the unused `http` dependency.
 - Expanded parity and edge-case tests.
 
 ## 0.1.3

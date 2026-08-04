@@ -1,16 +1,20 @@
-/// Network aliases mapping friendly names to network IDs
-Map<String, int> aliases = {
-  'mainnet': 1,
-  'devin': 3,
+/// Network aliases mapping IDs and friendly names to number-pool names.
+Map<String, String> aliases = {
+  '1': 'xcb',
+  'mainnet': 'xcb',
+  'xcb': 'xcb',
+  '3': 'xab',
+  'devin': 'xab',
+  'xab': 'xab',
 };
 
-/// Default phone numbers for each network and country
+/// Default phone numbers for each network and country.
 final Map<String, Map<String, List<String>>> countries = {
-  '1': {
+  'xcb': {
     'global': ['+12019715152'],
     'us': ['+12019715152'],
   },
-  '3': {
+  'xab': {
     'global': ['+12014835939'],
     'us': ['+12014835939'],
   },

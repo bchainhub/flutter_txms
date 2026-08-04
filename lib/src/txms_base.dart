@@ -4,16 +4,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'models/transport.dart';
 import 'constants.dart';
-import 'dart:collection';
+import 'routing.dart';
 
 class Txms implements Transport {
   static final Map<String, Map<String, List<String>>> _customPhoneNumbers = {};
 
-  static void addAlias(String name, int id) {
-    if (aliases is UnmodifiableMapView<String, int>) {
-      aliases = Map<String, int>.from(aliases);
-    }
-    aliases[name] = id;
+  static void addAlias(String name, dynamic network) {
+    aliases[name.toLowerCase()] = _getNetworkKey(network);
   }
 
   static void addCountry(
@@ -21,9 +18,9 @@ class Txms implements Transport {
     String countryCode,
     List<String> phoneNumbers,
   ) {
-    final networkKey = networkId.toString();
+    final networkKey = _getNetworkKey(networkId);
     countries[networkKey] ??= {};
-    countries[networkKey]![countryCode] = phoneNumbers;
+    countries[networkKey]![countryCode.toLowerCase()] = phoneNumbers;
   }
 
   static void setCustomPhoneNumbers(
@@ -37,9 +34,9 @@ class Txms implements Transport {
       }
     }
 
-    final networkKey = networkId.toString();
+    final networkKey = _getNetworkKey(networkId);
     _customPhoneNumbers[networkKey] ??= {};
-    _customPhoneNumbers[networkKey]![countryCode] = phoneNumbers;
+    _customPhoneNumbers[networkKey]![countryCode.toLowerCase()] = phoneNumbers;
   }
 
   static void resetCustomPhoneNumbers() {
@@ -47,12 +44,73 @@ class Txms implements Transport {
   }
 
   List<String> _getPhoneNumbers(String networkKey, String countryCode) {
+    countryCode = countryCode.toLowerCase();
     if (_customPhoneNumbers.containsKey(networkKey) &&
         _customPhoneNumbers[networkKey]!.containsKey(countryCode)) {
       return _customPhoneNumbers[networkKey]![countryCode]!;
     }
 
     return countries[networkKey]?[countryCode] ?? [];
+  }
+
+  static String _getNetworkKey([dynamic network]) {
+    if (network == null) return 'xcb';
+    final normalizedNetwork = network.toString().toLowerCase();
+    return aliases[normalizedNetwork] ?? normalizedNetwork;
+  }
+
+  String? _getRelatedNumber(
+    Map<String, List<String>> pool,
+    String countryCode,
+    List<List<String>> groups,
+  ) {
+    for (final group in groups) {
+      if (!group.contains(countryCode)) continue;
+      for (final availableCountry in group) {
+        if (availableCountry != countryCode &&
+            (pool[availableCountry]?.isNotEmpty ?? false)) {
+          return pool[availableCountry]!.first;
+        }
+      }
+      return null;
+    }
+    return null;
+  }
+
+  @override
+  String? getNumber({
+    String? iso3166A2,
+    bool returnNone = false,
+    dynamic network,
+  }) {
+    final networkKey = _getNetworkKey(network);
+    final pool = getEndpoint(networkKey);
+    if (pool.isEmpty) return null;
+    if (iso3166A2 == null || iso3166A2.trim().isEmpty) {
+      return pool['global']?.firstOrNull;
+    }
+
+    final normalizedCountry = iso3166A2.trim().toLowerCase() == 'uk'
+        ? 'gb'
+        : iso3166A2.trim().toLowerCase();
+    final directNumber = pool[normalizedCountry]?.firstOrNull;
+    if (directNumber != null) return directNumber;
+
+    final prefixNumber = _getRelatedNumber(
+      pool,
+      normalizedCountry,
+      callingCodeGroups,
+    );
+    if (prefixNumber != null) return prefixNumber;
+
+    final organizationNumber = _getRelatedNumber(
+      pool,
+      normalizedCountry,
+      organizationGroups,
+    );
+    if (organizationNumber != null) return organizationNumber;
+
+    return returnNone ? null : pool['global']?.firstOrNull;
   }
 
   String _slugify(String str) {
@@ -66,7 +124,7 @@ class Txms implements Transport {
   @override
   String encode(String hex) {
     var data = '';
-    if (hex.substring(0, 2).toLowerCase() == '0x') {
+    if (hex.toLowerCase().startsWith('0x')) {
       hex = hex.substring(2);
     }
 
@@ -143,13 +201,7 @@ class Txms implements Transport {
       requestedList = [countriesList];
     }
 
-    final netw = network == null
-        ? 1
-        : network is String
-            ? aliases[network.toLowerCase()] ?? int.parse(network)
-            : network as int;
-
-    final networkKey = netw.toString();
+    final networkKey = _getNetworkKey(network);
 
     if (requestedList == null) {
       final result = <String, List<String>>{};
@@ -166,9 +218,10 @@ class Txms implements Transport {
 
     final endpoints = <String, List<String>>{};
     for (final countryCode in requestedList) {
-      final numbers = _getPhoneNumbers(networkKey, countryCode);
+      final normalizedCountryCode = countryCode.toLowerCase();
+      final numbers = _getPhoneNumbers(networkKey, normalizedCountryCode);
       if (numbers.isNotEmpty) {
-        endpoints[countryCode] = numbers;
+        endpoints[normalizedCountryCode] = numbers;
       }
     }
     return endpoints;
@@ -220,14 +273,10 @@ class Txms implements Transport {
     String platform = 'global',
   }) {
     String? endpoint;
-    final netw = network == null || network == 1 || network == 'mainnet'
-        ? 1
-        : network is String
-            ? aliases[network.toLowerCase()]!
-            : network as int;
+    final networkKey = _getNetworkKey(network);
 
     if (number == true) {
-      endpoint = countries[netw.toString()]!['global']![0];
+      endpoint = _getPhoneNumbers(networkKey, 'global').first;
     } else if (number is int) {
       endpoint = '+$number';
     } else if (number is String) {
@@ -297,6 +346,7 @@ class Txms implements Transport {
           : path.join(directory.path, filename);
 
       final file = File(outputPath);
+      await file.parent.create(recursive: true);
       await file.writeAsString(encodedMessage);
       return outputPath;
     } else {
@@ -304,6 +354,7 @@ class Txms implements Transport {
           optionalPath != null ? path.join(optionalPath, filename) : filename;
 
       final file = File(outputPath);
+      await file.parent.create(recursive: true);
       await file.writeAsString(encodedMessage);
       return outputPath;
     }

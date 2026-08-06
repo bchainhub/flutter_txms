@@ -59,6 +59,13 @@ void main() {
       expect(endpoints['us'], contains('+12019715152'));
     });
 
+    test('includes the XCB mainnet country numbers', () {
+      expect(countries['xcb']!['au'], ['+61485883792']);
+      expect(countries['xcb']!['gb'], ['+447893984933']);
+      expect(countries['xcb']!['nl'], ['+3197058019443']);
+      expect(countries['xcb']!['th'], ['+66830551102']);
+    });
+
     test('add new alias', () {
       Txms.addAlias('testnet', 2);
       expect(aliases['testnet'], '2');

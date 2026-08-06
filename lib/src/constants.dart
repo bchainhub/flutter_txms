@@ -12,6 +12,10 @@ Map<String, String> aliases = {
 final Map<String, Map<String, List<String>>> countries = {
   'xcb': {
     'global': ['+12019715152'],
+    'au': ['+61485883792'],
+    'gb': ['+447893984933'],
+    'nl': ['+3197058019443'],
+    'th': ['+66830551102'],
     'us': ['+12019715152'],
   },
   'xab': {

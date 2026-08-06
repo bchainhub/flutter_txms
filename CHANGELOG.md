@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- Added XCB mainnet numbers for Australia, the Netherlands, Thailand, and the
+  United Kingdom.
+
 ## 0.2.0
 
 - Added `getNumber` with direct, calling-code, organization, and global fallback selection.

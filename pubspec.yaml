@@ -1,6 +1,6 @@
 name: flutter_txms
 description: A Flutter package for encoding and decoding hex messages for TxMS transport
-version: 0.2.1
+version: 0.2.2
 repository: https://github.com/bchainhub/flutter_txms
 homepage: https://github.com/bchainhub/flutter_txms
 documentation: https://github.com/bchainhub/flutter_txms#readme
@@ -25,10 +25,10 @@ dev_dependencies:
 # Keywords related to the package
 topics:
   - txms
+  - binary-to-text
   - hex
   - sms
   - mms
-  - communication
 
 # Funding links
 funding:

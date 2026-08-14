@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2
+
+- Added explicit EEA then EU number fallback, with non-EU EEA countries using
+  an available EU number when no EEA number is available.
+
 ## 0.2.1
 
 - Added XCB mainnet numbers for Australia, the Netherlands, Thailand, and the

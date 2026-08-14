@@ -39,8 +39,8 @@ const List<List<String>> callingCodeGroups = [
   ['ma', 'eh'],
 ];
 
-/// Organization members ordered by population, largest first.
-const List<List<String>> organizationGroups = [
+/// European Union members ordered by population, largest first.
+const List<List<String>> europeanUnionGroups = [
   [
     'de',
     'fr',
@@ -70,6 +70,15 @@ const List<List<String>> organizationGroups = [
     'lu',
     'mt',
   ],
+];
+
+/// Non-EU European Economic Area members ordered by population.
+const List<List<String>> europeanEconomicAreaGroups = [
+  ['no', 'is', 'li'],
+];
+
+/// Other organization members ordered by population, largest first.
+const List<List<String>> organizationGroups = [
   ['id', 'ph', 'vn', 'th', 'mm', 'my', 'kh', 'la', 'sg', 'tl', 'bn'],
   ['sa', 'ae', 'om', 'kw', 'qa', 'bh'],
   ['br', 'ar', 'bo', 'py', 'uy'],

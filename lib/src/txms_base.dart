@@ -77,6 +77,18 @@ class Txms implements Transport {
     return null;
   }
 
+  String? _getAvailableNumber(
+    Map<String, List<String>> pool,
+    List<List<String>> groups,
+  ) {
+    for (final countryCode in groups.firstOrNull ?? <String>[]) {
+      if (pool[countryCode]?.isNotEmpty ?? false) {
+        return pool[countryCode]!.first;
+      }
+    }
+    return null;
+  }
+
   @override
   String? getNumber({
     String? iso3166A2,
@@ -102,6 +114,29 @@ class Txms implements Transport {
       callingCodeGroups,
     );
     if (prefixNumber != null) return prefixNumber;
+
+    final europeanEconomicAreaNumber = _getRelatedNumber(
+      pool,
+      normalizedCountry,
+      europeanEconomicAreaGroups,
+    );
+    if (europeanEconomicAreaNumber != null) {
+      return europeanEconomicAreaNumber;
+    }
+    if (europeanEconomicAreaGroups.first.contains(normalizedCountry)) {
+      final europeanUnionNumber = _getAvailableNumber(
+        pool,
+        europeanUnionGroups,
+      );
+      if (europeanUnionNumber != null) return europeanUnionNumber;
+    }
+
+    final europeanUnionNumber = _getRelatedNumber(
+      pool,
+      normalizedCountry,
+      europeanUnionGroups,
+    );
+    if (europeanUnionNumber != null) return europeanUnionNumber;
 
     final organizationNumber = _getRelatedNumber(
       pool,

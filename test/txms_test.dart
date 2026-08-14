@@ -86,6 +86,7 @@ void main() {
       countries['xcb']!.remove('cz');
       countries['xcb']!.remove('de');
       countries['xcb']!.remove('fr');
+      countries['xcb']!.remove('no');
       countries.remove('teth');
       aliases.remove('testnet');
     });
@@ -115,6 +116,15 @@ void main() {
       Txms.addCountry(1, 'FR', ['+33123456789']);
       Txms.addCountry(1, 'DE', ['+49123456789']);
       expect(txms.getNumber(iso3166A2: 'sk'), '+49123456789');
+    });
+
+    test('falls back from an EEA country to an available EU number', () {
+      expect(txms.getNumber(iso3166A2: 'is'), '+3197058019443');
+    });
+
+    test('checks EEA numbers before EU numbers', () {
+      Txms.addCountry(1, 'NO', ['+4712345678']);
+      expect(txms.getNumber(iso3166A2: 'is'), '+4712345678');
     });
 
     test('falls back globally or returns null when requested', () {

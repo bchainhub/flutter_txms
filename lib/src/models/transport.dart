@@ -30,8 +30,8 @@ abstract class Transport {
     dynamic countriesList,
   ]);
 
-  /// Selects a number for a country, with calling-code, EEA, EU, and other
-  /// organization fallbacks matching txms.js.
+  /// Selects a number for a country, with calling-code, EFTA/EEA/EU, WB6/EU,
+  /// and other organization fallbacks matching txms.js.
   String? getNumber({
     String? iso3166A2,
     bool returnNone = false,

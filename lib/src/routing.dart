@@ -72,9 +72,19 @@ const List<List<String>> europeanUnionGroups = [
   ],
 ];
 
+/// European Free Trade Association members ordered by population.
+const List<List<String>> europeanFreeTradeAssociationGroups = [
+  ['ch', 'no', 'is', 'li'],
+];
+
 /// Non-EU European Economic Area members ordered by population.
 const List<List<String>> europeanEconomicAreaGroups = [
   ['no', 'is', 'li'],
+];
+
+/// Western Balkans Six members ordered by population.
+const List<List<String>> westernBalkansSixGroups = [
+  ['rs', 'al', 'ba', 'mk', 'xk', 'me'],
 ];
 
 /// Other organization members ordered by population, largest first.

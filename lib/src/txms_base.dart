@@ -115,6 +115,15 @@ class Txms implements Transport {
     );
     if (prefixNumber != null) return prefixNumber;
 
+    final europeanFreeTradeAssociationNumber = _getRelatedNumber(
+      pool,
+      normalizedCountry,
+      europeanFreeTradeAssociationGroups,
+    );
+    if (europeanFreeTradeAssociationNumber != null) {
+      return europeanFreeTradeAssociationNumber;
+    }
+
     final europeanEconomicAreaNumber = _getRelatedNumber(
       pool,
       normalizedCountry,
@@ -130,6 +139,13 @@ class Txms implements Transport {
       );
       if (europeanUnionNumber != null) return europeanUnionNumber;
     }
+    if (europeanFreeTradeAssociationGroups.first.contains(normalizedCountry)) {
+      final europeanUnionNumber = _getAvailableNumber(
+        pool,
+        europeanUnionGroups,
+      );
+      if (europeanUnionNumber != null) return europeanUnionNumber;
+    }
 
     final europeanUnionNumber = _getRelatedNumber(
       pool,
@@ -137,6 +153,20 @@ class Txms implements Transport {
       europeanUnionGroups,
     );
     if (europeanUnionNumber != null) return europeanUnionNumber;
+
+    final westernBalkansSixNumber = _getRelatedNumber(
+      pool,
+      normalizedCountry,
+      westernBalkansSixGroups,
+    );
+    if (westernBalkansSixNumber != null) return westernBalkansSixNumber;
+    if (westernBalkansSixGroups.first.contains(normalizedCountry)) {
+      final europeanUnionNumber = _getAvailableNumber(
+        pool,
+        europeanUnionGroups,
+      );
+      if (europeanUnionNumber != null) return europeanUnionNumber;
+    }
 
     final organizationNumber = _getRelatedNumber(
       pool,

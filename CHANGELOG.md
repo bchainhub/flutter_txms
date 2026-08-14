@@ -2,8 +2,8 @@
 
 ## 0.2.2
 
-- Added explicit EEA then EU number fallback, with non-EU EEA countries using
-  an available EU number when no EEA number is available.
+- Added EFTA to EEA to EU fallback, including Switzerland, and WB6 to EU
+  fallback.
 
 ## 0.2.1
 

@@ -13,7 +13,7 @@ A Flutter package for encoding and decoding hex messages for SMS/MMS communicati
 - 💾 File download support
 - 📲 Direct SMS/MMS client opening
 - 🌐 Cross-platform support (iOS, Android, Web, Desktop)
-- 🔀 Country, calling-code, EU, EEA, and organization-aware number selection
+- 🔀 Country, calling-code, EFTA, EEA, EU, WB6, and organization-aware number selection
 - 🧩 Extensible blockchain number pools and aliases
 - 🔒 Null safety
 - 📚 Comprehensive documentation
@@ -107,8 +107,8 @@ print('Number of MMS segments: $mmsCount');
 ```dart
 final txms = Txms();
 
-// Select directly or fall back through shared calling codes, the EEA, the EU,
-// other supported organizations, and finally the network's global endpoint.
+// Select directly or fall back through shared calling codes, EFTA/EEA/EU or
+// WB6/EU, other supported organizations, then the global endpoint.
 final number = txms.getNumber(iso3166A2: 'ca', network: 'xcb');
 
 // Add a blockchain pool and an alias without changing the library.

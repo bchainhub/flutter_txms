@@ -43,6 +43,41 @@ class Txms implements Transport {
     _customPhoneNumbers.clear();
   }
 
+  @override
+  SmsParseResult? parseSMS(String number, String text) {
+    final normalizedNumber = number.replaceAll(RegExp(r'\D'), '');
+    if (normalizedNumber.isEmpty || !_isConfiguredNumber(normalizedNumber)) {
+      return null;
+    }
+
+    final successMatch = RegExp(r'^OK\s+TxID:\s*(\S+)\s*$').firstMatch(text);
+    if (successMatch != null) {
+      return SmsParseResult.success(successMatch.group(1)!);
+    }
+
+    final failureMatch = RegExp(r'^Failed:\s*(.+?)\s*$').firstMatch(text);
+    if (failureMatch != null) {
+      return SmsParseResult.failure(failureMatch.group(1)!);
+    }
+
+    return null;
+  }
+
+  bool _isConfiguredNumber(String normalizedNumber) {
+    final pools = <Map<String, List<String>>>[
+      ...countries.values,
+      ..._customPhoneNumbers.values,
+    ];
+    return pools.any(
+      (pool) => pool.values.any(
+        (phoneNumbers) => phoneNumbers.any(
+          (phoneNumber) =>
+              phoneNumber.replaceAll(RegExp(r'\D'), '') == normalizedNumber,
+        ),
+      ),
+    );
+  }
+
   List<String> _getPhoneNumbers(String networkKey, String countryCode) {
     countryCode = countryCode.toLowerCase();
     if (_customPhoneNumbers.containsKey(networkKey) &&

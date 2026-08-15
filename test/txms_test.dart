@@ -285,6 +285,39 @@ void main() {
     });
   }, skip: !const bool.fromEnvironment('dart.library.io'));
 
+  group('SMS response parsing', () {
+    setUp(Txms.resetCustomPhoneNumbers);
+
+    test('parses success and failure responses from pool numbers', () {
+      final success = txms.parseSMS(
+        '+1 (201) 971-5152',
+        'OK TxID: 0xabc123',
+      );
+      expect(success?.success, isTrue);
+      expect(success?.transactionId, '0xabc123');
+      expect(success?.reason, isNull);
+
+      final failure = txms.parseSMS(
+        '+12019715152',
+        'Failed: Nonce too low.',
+      );
+      expect(failure?.success, isFalse);
+      expect(failure?.transactionId, isNull);
+      expect(failure?.reason, 'Nonce too low.');
+    });
+
+    test('accepts additional numbers and ignores other messages', () {
+      Txms.setCustomPhoneNumbers('xcb', 'sk', ['+421900123456']);
+
+      expect(
+        txms.parseSMS('+421900123456', 'Failed: Provider error')?.reason,
+        'Provider error',
+      );
+      expect(txms.parseSMS('+421900000000', 'OK TxID: 0xabc'), isNull);
+      expect(txms.parseSMS('+12019715152', 'Unrelated message'), isNull);
+    });
+  });
+
   group('SMS/MMS Client Tests', () {
     test('openSmsClient generates correct URI', () async {
       expect(

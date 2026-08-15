@@ -1,6 +1,9 @@
 /// Transport interface for handling hex-encoded messages in SMS/MMS communication.
 /// Provides methods for encoding, decoding, and managing message transport.
 abstract class Transport {
+  /// Parses a transaction-status SMS received from a configured TxMS number.
+  SmsParseResult? parseSMS(String number, String text);
+
   /// Encodes a hex string into a format suitable for SMS/MMS transmission.
   ///
   /// The [hex] parameter should be a valid hexadecimal string, optionally starting with '0x'.
@@ -134,4 +137,19 @@ abstract class Transport {
     bool encodeMessage = true,
     String platform = 'global',
   });
+}
+
+/// A transaction status parsed from an SMS response.
+class SmsParseResult {
+  const SmsParseResult.success(this.transactionId)
+      : success = true,
+        reason = null;
+
+  const SmsParseResult.failure(this.reason)
+      : success = false,
+        transactionId = null;
+
+  final bool success;
+  final String? transactionId;
+  final String? reason;
 }

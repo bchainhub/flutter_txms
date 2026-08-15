@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+- Added `parseSMS` for validating sender numbers and parsing successful or
+  failed transaction responses.
+
 ## 0.2.2
 
 - Added EFTA to EEA to EU fallback, including Switzerland, and WB6 to EU

@@ -50,9 +50,18 @@ class Txms implements Transport {
       return null;
     }
 
-    final successMatch = RegExp(r'^OK\s+TxID:\s*(\S+)\s*$').firstMatch(text);
+    final successMatch = RegExp(
+      r'^OK\s+([+-]?)([0-9]+(?:\.[0-9]+)?)\s+([A-Za-z0-9._-]{1,64})\s+TxID:\s*(0x[0-9A-Fa-f]+)\s*$',
+    ).firstMatch(text);
     if (successMatch != null) {
-      return SmsParseResult.success(successMatch.group(1)!);
+      return SmsParseResult.success(
+        successMatch.group(4)!,
+        amount: successMatch.group(2),
+        asset: successMatch.group(3)?.toUpperCase(),
+        direction: successMatch.group(1) == '-'
+            ? TxmsTransactionDirection.outgoing
+            : TxmsTransactionDirection.incoming,
+      );
     }
 
     final failureMatch = RegExp(r'^Failed:\s*(.+?)\s*$').firstMatch(text);

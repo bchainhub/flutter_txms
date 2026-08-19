@@ -24,10 +24,27 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_txms: ^0.2.0
+  flutter_txms: ^1.0.0
 ```
 
 ## Usage
+
+### Parse transaction receipt SMS
+
+```dart
+final receipt = Txms().parseSMS(
+  '+12019715152',
+  'OK -1.25 USDX TxID: 0xabc',
+);
+
+print(receipt?.amount); // 1.25 (exact decimal string)
+print(receipt?.asset); // USDX
+print(receipt?.direction); // TxmsTransactionDirection.outgoing
+```
+
+The sign is returned separately as `direction`; `amount` is always unsigned. A
+missing sign is treated as incoming. Labeled and minimal receipt formats remain
+unsupported.
 
 ### Basic Example
 

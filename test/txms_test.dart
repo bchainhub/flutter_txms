@@ -289,13 +289,45 @@ void main() {
     setUp(Txms.resetCustomPhoneNumbers);
 
     test('parses success and failure responses from pool numbers', () {
-      final success = txms.parseSMS(
-        '+1 (201) 971-5152',
-        'OK TxID: 0xabc123',
+      final tickerAsset = txms.parseSMS(
+        '+12019715152',
+        'OK -1.25 usdx TxID: 0xdef456',
       );
-      expect(success?.success, isTrue);
-      expect(success?.transactionId, '0xabc123');
-      expect(success?.reason, isNull);
+      expect(tickerAsset?.transactionId, '0xdef456');
+      expect(tickerAsset?.amount, '1.25');
+      expect(tickerAsset?.asset, 'USDX');
+      expect(tickerAsset?.direction, TxmsTransactionDirection.outgoing);
+
+      final contractAsset = txms.parseSMS(
+        '+12019715152',
+        'OK +1.25 CB1958B39698A44BDAE37F881E68DCE073823A48A631 TxID: 0xdef456',
+      );
+      expect(contractAsset?.transactionId, '0xdef456');
+      expect(contractAsset?.amount, '1.25');
+      expect(
+        contractAsset?.asset,
+        'CB1958B39698A44BDAE37F881E68DCE073823A48A631',
+      );
+      expect(contractAsset?.direction, TxmsTransactionDirection.incoming);
+
+      final unsignedAsset = txms.parseSMS(
+        '+12019715152',
+        'OK 1.25 USDX TxID: 0xdef456',
+      );
+      expect(unsignedAsset?.amount, '1.25');
+      expect(unsignedAsset?.asset, 'USDX');
+      expect(unsignedAsset?.direction, TxmsTransactionDirection.incoming);
+      expect(
+        txms.parseSMS('+12019715152', 'OK TxID: 0xdef456'),
+        isNull,
+      );
+      expect(
+        txms.parseSMS(
+          '+12019715152',
+          'OK Amount: 1.25 Asset: USDX TxID: 0xdef456',
+        ),
+        isNull,
+      );
 
       final failure = txms.parseSMS(
         '+12019715152',
@@ -313,7 +345,10 @@ void main() {
         txms.parseSMS('+421900123456', 'Failed: Provider error')?.reason,
         'Provider error',
       );
-      expect(txms.parseSMS('+421900000000', 'OK TxID: 0xabc'), isNull);
+      expect(
+        txms.parseSMS('+421900000000', 'OK -1 XCB TxID: 0xabc'),
+        isNull,
+      );
       expect(txms.parseSMS('+12019715152', 'Unrelated message'), isNull);
     });
   });

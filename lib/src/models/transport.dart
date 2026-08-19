@@ -141,15 +141,33 @@ abstract class Transport {
 
 /// A transaction status parsed from an SMS response.
 class SmsParseResult {
-  const SmsParseResult.success(this.transactionId)
-      : success = true,
+  const SmsParseResult.success(
+    this.transactionId, {
+    this.amount,
+    this.asset,
+    required this.direction,
+  })  : success = true,
         reason = null;
 
   const SmsParseResult.failure(this.reason)
       : success = false,
-        transactionId = null;
+        transactionId = null,
+        amount = null,
+        asset = null,
+        direction = null;
 
   final bool success;
   final String? transactionId;
   final String? reason;
+
+  /// Exact decimal amount reported by the TxMS server, when available.
+  final String? amount;
+
+  /// Uppercase Well-Known ticker or fallback token contract address.
+  final String? asset;
+
+  /// Whether the receipt increases or decreases the wallet balance.
+  final TxmsTransactionDirection? direction;
 }
+
+enum TxmsTransactionDirection { incoming, outgoing }

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0
+
+- Added exact decimal `amount` and uppercase `asset` fields to successful
+  `SmsParseResult` values. Assets may be Well-Known tickers or fallback contract
+  addresses.
+- Added `TxmsTransactionDirection.incoming` and `.outgoing` receipt directions.
+- Parse signed receipt amounts while returning the amount itself unsigned.
+- Treat a missing receipt sign as an incoming transaction.
+- Require the strict `OK {sign}{amount} {asset} TxID: {id}` receipt format.
+- Removed support for unsigned and minimal success receipts.
+- Removed the legacy labeled `Amount:` / `Asset:` receipt syntax.
+- Enforced hexadecimal transaction IDs in successful receipt messages.
+
 ## 0.2.3
 
 - Added `parseSMS` for validating sender numbers and parsing successful or
